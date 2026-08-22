@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BDTravel — Smart Bangladesh Tourism</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--green:#086b4d;--deep:#043d2c;--mint:#e9f6f0;--gold:#ffd166;--ink:#17352c;--muted:#61736c;--bg:#f5f8f6;--white:#fff;--red:#d9534f;--shadow:0 10px 30px #17352c14}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}textarea{width:100%;padding:12px;border:1px solid #cddbd5;border-radius:10px;resize:vertical}.btn{border:0;background:var(--gold);color:var(--ink);font-weight:800;padding:12px 17px;border-radius:11px;cursor:pointer}.btn.green{background:var(--green);color:#fff}.btn.dark{background:var(--deep);color:#fff}.btn.ghost{background:#fff;border:1px solid #cddbd5}.small{padding:8px 11px;font-size:13px}.topbar{background:var(--deep);color:#dcefe8;text-align:center;padding:7px;font-size:12px}.header{background:linear-gradient(135deg,#063b2c,#0c7a58);color:#fff;padding:18px 5%;position:sticky;top:0;z-index:1000;box-shadow:0 5px 20px #0002}.nav{display:flex;align-items:center;justify-content:space-between;gap:20px}.logo{font-size:25px;font-weight:800}.logo span{color:var(--gold)}nav a{color:#fff;text-decoration:none;margin-left:15px;font-weight:600;font-size:14px}.hero{padding:68px 5%;color:#fff;background:linear-gradient(120deg,#043d2ceb,#0b7856db),url('https://images.unsplash.com/photo-1564760055775-d63b17a55c44?auto=format&fit=crop&w=1800&q=80') center/cover}.hero h1{font-size:clamp(40px,6vw,72px);line-height:1.02;max-width:900px;margin:0 0 16px}.hero p{max-width:780px;font-size:18px;line-height:1.7}.searchbox{max-width:1000px;background:#fff;padding:12px;border-radius:17px;display:grid;grid-template-columns:1.5fr .8fr .8fr auto;gap:9px;box-shadow:0 20px 45px #0004;margin-top:28px}.searchbox input,.searchbox select,.form input,.form select,.form textarea{border:0;outline:0;background:#f1f6f3;padding:13px;border-radius:10px;color:var(--ink)}section{padding:58px 5%}.title{text-align:center;margin-bottom:30px}.title h2{font-size:34px;margin:0 0 8px}.title p{color:var(--muted);margin:0}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:20px}.card{background:#fff;border-radius:18px;overflow:hidden;box-shadow:var(--shadow);transition:.2s}.card:hover{transform:translateY(-4px)}.card img{width:100%;height:175px;object-fit:cover}.body{padding:18px}.tag{display:inline-block;background:#e2f4ec;color:var(--green);padding:5px 9px;border-radius:20px;font-size:11px;font-weight:800}.body h3{margin:8px 0;font-size:21px}.meta{color:var(--muted);font-size:13px;line-height:1.8}.price{font-weight:800;color:var(--green);margin-top:10px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.filters{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-bottom:25px}.filter{background:#fff;border:1px solid #cbdad4;border-radius:30px;padding:9px 14px;cursor:pointer}.filter.active{background:var(--green);color:#fff}.features{background:var(--mint)}.feature{background:#fff;border-radius:17px;padding:20px;box-shadow:var(--shadow)}.feature h3{margin:5px 0 8px}.feature p{color:var(--muted);line-height:1.6;font-size:14px}.split{display:grid;grid-template-columns:1fr 1fr;gap:22px}.panel{background:#fff;border-radius:20px;padding:24px;box-shadow:var(--shadow)}.panel h3{margin-top:0}.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.field label{font-size:12px;font-weight:700;display:block;margin-bottom:6px}.field input,.field select,.field textarea{width:100%}.result{margin-top:18px;background:var(--mint);padding:17px;border-radius:14px;line-height:1.8}.hero-result{font-size:20px;font-weight:800}.map{height:450px;border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}#map{height:100%}.statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat{background:#fff;padding:20px;border-radius:16px;box-shadow:var(--shadow);text-align:center}.stat b{display:block;font-size:28px;color:var(--green)}.score{height:9px;background:#e4ece8;border-radius:20px;overflow:hidden;margin:7px 0 12px}.score i{display:block;height:100%;background:var(--green)}.list{display:grid;gap:10px}.item{background:#fff;border-radius:14px;padding:15px;box-shadow:0 5px 18px #17352c0e}.badge{display:inline-block;padding:5px 8px;background:#fff3c9;border-radius:8px;font-size:11px;font-weight:800}.alert{border-left:5px solid var(--gold);background:#fff9df;padding:14px;border-radius:10px}.danger{border-left-color:var(--red);background:#fff0ef}.modal{display:none;position:fixed;inset:0;background:#0008;z-index:3000;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modalbox{background:#fff;max-width:850px;width:100%;max-height:90vh;overflow:auto;border-radius:20px;padding:25px;position:relative}.close{position:absolute;right:18px;top:14px;border:0;background:#eee;border-radius:50%;width:34px;height:34px;cursor:pointer}.toast{position:fixed;right:20px;bottom:20px;background:var(--deep);color:#fff;padding:13px 17px;border-radius:12px;display:none;z-index:4000}.toast.show{display:block}.footer{background:#052a20;color:#cfe2dc;padding:40px 5%;text-align:center}.muted{color:var(--muted)}.center{text-align:center}.poi-card{background:#fff;border:1px solid #dbe8e2;border-radius:14px;padding:15px}.poi-card h4{margin:0 0 6px}.poi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:14px}.source{font-size:11px;color:var(--muted)}.hidden{display:none!important}@media(max-width:800px){nav a{display:none}.searchbox,.split{grid-template-columns:1fr}.statgrid{grid-template-columns:repeat(2,1fr)}.hero{padding-top:45px}}
+
+/* ===== BDTravel Power Features ===== */
+.power-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.power-card{background:#fff;border:1px solid #d9e8e1;border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.progress{height:10px;background:#e8f0ed;border-radius:99px;overflow:hidden}.progress>span{display:block;height:100%;background:var(--green);width:0}
+.avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:var(--mint);display:inline-flex;align-items:center;justify-content:center;font-weight:800}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px}.badge{padding:7px 10px;border-radius:999px;background:var(--mint);font-size:12px;font-weight:700}
+.review{border:1px solid #dce8e3;border-radius:14px;padding:14px;background:#fff}.review-stars{letter-spacing:2px}
+.photo-preview{max-width:180px;max-height:130px;border-radius:12px;object-fit:cover;margin-top:10px}
+.offline-banner{display:none;position:sticky;top:0;z-index:50;background:#043d2c;color:#fff;padding:9px 14px;text-align:center;font-weight:700}
+.offline-banner.show{display:block}.alert-card{border-left:5px solid var(--red);background:#fff4f2}
+.passport-stamp{border:2px dashed #8ab6a7;border-radius:14px;padding:14px;text-align:center;background:#f8fcfa}
+.passport-stamp.visited{background:var(--mint);border-style:solid}
+input[type=file]{padding:10px;background:#fff;border:1px solid #cddbd5;border-radius:10px;width:100%}
+</style>
+
+<style>
+.district-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.district-card{min-height:145px}.district-card h3{margin:10px 0 2px}.district-card p{margin:0 0 12px}.district-card .tag{font-size:11px}.district-card a{display:inline-block;text-decoration:none}.districts-note{margin-top:16px}
+</style>
+</head>
+<body><div id="offlineBanner" class="offline-banner">📡 Offline Travel Mode — saved trip data is available on this device.</div>
+<div class="topbar">🇧🇩 BDTravel Hackathon Prototype • Plan smarter • Travel safer • Support local tourism</div>
+<header class="header"><div class="nav"><div class="logo">BD<span>Travel</span> 🌿</div><nav><a href="#destinations">Explore</a><a href="#districts">64 Districts</a><a href="#mapsec">Map</a><a href="#ai">AI Planner</a><a href="#liveweather">Weather</a><a href="#routes">Routes</a><a href="#services">Services</a><a href="#safety">Safety</a><a href="#saved">Saved <span id="savedCount">0</span></a></nav></div></header>
+
+<section class="hero"><div><span class="badge">SMART BANGLADESH TOURISM PLATFORM</span><h1>Explore Bangladesh. One trip, fully planned.</h1><p>Destinations, best seasons, budget, hotels, food, transport, trekking, boats, emergency help, safety, eco-score, reviews and a smart itinerary — all in one place.</p><div class="searchbox"><input id="search" placeholder="Search Cox's Bazar, Sajek, Sundarbans..."><select id="season"><option value="">Any season</option><option>Winter</option><option>Summer</option><option>Monsoon</option></select><select id="travelType"><option value="">Any travel style</option><option>Family</option><option>Couple</option><option>Solo</option><option>Friends</option><option>Adventure</option></select><button class="btn" onclick="render()">Explore</button></div></div></section>
+
+<section><div class="statgrid"><div class="stat"><b>64+</b>Districts to discover</div><div class="stat"><b>20+</b>Smart travel tools</div><div class="stat"><b>24/7</b>Emergency guidance</div><div class="stat"><b>100%</b>Local-first concept</div></div></section>
+
+<section id="destinations"><div class="title"><h2>Discover destinations</h2><p>Core destination cards are planning estimates; live services and official district sources are connected below. Verify prices/availability before launch.</p></div><div class="filters"><button class="filter active" onclick="setFilter('')">All</button><button class="filter" onclick="setFilter('Beach')">🏖️ Beach</button><button class="filter" onclick="setFilter('Hill')">⛰️ Hill</button><button class="filter" onclick="setFilter('Forest')">🌳 Forest</button><button class="filter" onclick="setFilter('Heritage')">🏛️ Heritage</button><button class="filter" onclick="setFilter('Wetland')">🌊 Wetland</button></div><div class="cards" id="cards"></div></section>
+
+<section id="districts"><div class="title"><h2>🇧🇩 64 Districts — Verified Government Directory</h2><p>District names and official district portals are sourced from Bangladesh National Portal. Tourist attractions should be verified against Bangladesh Tourism Board / Bangladesh Parjatan Corporation before publication.</p></div><div class="district-grid"><div class="item district-card"><span class="tag">Verified government directory</span><h3>ঢাকা</h3><p>Dhaka District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://dhaka.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>ফরিদপুর</h3><p>Faridpur District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://faridpur.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>গাজীপুর</h3><p>Gazipur District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://gazipur.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>গোপালগঞ্জ</h3><p>Gopalganj District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://gopalganj.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>কিশোরগঞ্জ</h3><p>Kishoreganj District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://kishoreganj.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>মাদারীপুর</h3><p>Madaripur District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://madaripur.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>মানিকগঞ্জ</h3><p>Manikganj District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://manikganj.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>মুন্সীগঞ্জ</h3><p>Munshiganj District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://munshiganj.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>নারায়ণগঞ্জ</h3><p>Narayanganj District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://narayanganj.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>নরসিংদী</h3><p>Narsingdi District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://narsingdi.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>রাজবাড়ী</h3><p>Rajbari District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://rajbari.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>শরীয়তপুর</h3><p>Shariatpur District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://shariatpur.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>টাঙ্গাইল</h3><p>Tangail District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://tangail.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>বাগেরহাট</h3><p>Bagerhat District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://bagerhat.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>চুয়াডাঙ্গা</h3><p>Chuadanga District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://chuadanga.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>যশোর</h3><p>Jashore District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://jashore.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>ঝিনাইদহ</h3><p>Jhenaidah District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://jhenaidah.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>খুলনা</h3><p>Khulna District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://khulna.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>কুষ্টিয়া</h3><p>Kushtia District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://kushtia.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>মাগুরা</h3><p>Magura District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://magura.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>মেহেরপুর</h3><p>Meherpur District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://meherpur.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>নড়াইল</h3><p>Narail District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://narail.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>সাতক্ষীরা</h3><p>Satkhira District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://satkhira.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>বান্দরবান</h3><p>Bandarban District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://bandarban.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>ব্রাহ্মণবাড়িয়া</h3><p>Brahmanbaria District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://brahmanbaria.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>চাঁদপুর</h3><p>Chandpur District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://chandpur.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>চট্টগ্রাম</h3><p>Chattogram District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://chattogram.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>কুমিল্লা</h3><p>Cumilla District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://comilla.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>কক্সবাজার</h3><p>Cox's Bazar District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://coxsbazar.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>ফেনী</h3><p>Feni District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://feni.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>খাগড়াছড়ি</h3><p>Khagrachhari District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://khagrachhari.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>লক্ষ্মীপুর</h3><p>Lakshmipur District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://lakshmipur.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>নোয়াখালী</h3><p>Noakhali District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://noakhali.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>রাঙ্গামাটি পার্বত্য</h3><p>Rangamati District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://rangamati.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>বগুড়া</h3><p>Bogura District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://bogra.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>জয়পুরহাট</h3><p>Joypurhat District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://joypurhat.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>নওগাঁ</h3><p>Naogaon District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://naogaon.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>নাটোর</h3><p>Natore District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://natore.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>চাঁপাইনবাবগঞ্জ</h3><p>Chapainawabganj District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://chapainawabganj.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>পাবনা</h3><p>Pabna District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://pabna.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>রাজশাহী</h3><p>Rajshahi District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://rajshahi.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>সিরাজগঞ্জ</h3><p>Sirajganj District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://sirajganj.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>হবিগঞ্জ</h3><p>Habiganj District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://habiganj.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>মৌলভীবাজার</h3><p>Moulvibazar District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://moulvibazar.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>সুনামগঞ্জ</h3><p>Sunamganj District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://sunamganj.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>সিলেট</h3><p>Sylhet District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://sylhet.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>দিনাজপুর</h3><p>Dinajpur District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://dinajpur.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>গাইবান্ধা</h3><p>Gaibandha District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://gaibandha.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>কুড়িগ্রাম</h3><p>Kurigram District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://kurigram.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>লালমনিরহাট</h3><p>Lalmonirhat District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://lalmonirhat.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>নীলফামারী</h3><p>Nilphamari District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://nilphamari.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>পঞ্চগড়</h3><p>Panchagarh District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://panchagarh.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>রংপুর</h3><p>Rangpur District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://rangpur.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>ঠাকুরগাঁও</h3><p>Thakurgaon District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://thakurgaon.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>জামালপুর</h3><p>Jamalpur District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://jamalpur.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>ময়মনসিংহ</h3><p>Mymensingh District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://mymensingh.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>নেত্রকোণা</h3><p>Netrokona District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://netrokona.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>শেরপুর</h3><p>Sherpur District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://sherpur.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>বরগুনা</h3><p>Barguna District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://barguna.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>বরিশাল</h3><p>Barishal District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://barisal.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>ভোলা</h3><p>Bhola District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://bhola.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>ঝালকাঠি</h3><p>Jhalakathi District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://jhalakathi.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>পটুয়াখালী</h3><p>Patuakhali District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://patuakhali.gov.bd">Official district portal ↗</a></div><div class="item district-card"><span class="tag">Verified government directory</span><h3>পিরোজপুর</h3><p>Pirojpur District</p><a class="btn small ghost" target="_blank" rel="noopener" href="https://pirojpur.gov.bd">Official district portal ↗</a></div></div><div class="panel"><h3>Official tourism sources</h3><p>Use these sources for destination and attraction verification:</p><div class="actions"><a class="btn small green" target="_blank" rel="noopener" href="https://tourismboard.gov.bd/site/page/2e074183-4409-4bdb-ab95-8aa59df196c7/District-wise-Attractions">Bangladesh Tourism Board — District Attractions ↗</a><a class="btn small green" target="_blank" rel="noopener" href="https://parjatan.gov.bd/">Bangladesh Parjatan Corporation ↗</a><a class="btn small green" target="_blank" rel="noopener" href="https://btbregistration.gov.bd/">BTB Registered Tour Operators & Guides ↗</a></div></div></section>
+<section id="mapsec"><div class="title"><h2>🗺️ Interactive Bangladesh Map</h2><p>Click a destination marker to open its travel profile.</p></div><div class="map"><div id="map"></div></div></section>
+
+<section id="ai"><div class="title"><h2>🤖 Smart AI Trip Planner</h2><p>Give your travel style, days and budget; the prototype generates a personalized plan.</p></div><div class="panel"><div class="form"><div class="field"><label>Destination</label><select id="aiPlace"></select></div><div class="field"><label>Travel style</label><select id="aiStyle"><option>Family</option><option>Couple</option><option>Solo</option><option>Friends</option><option>Adventure</option></select></div><div class="field"><label>Days</label><input id="aiDays" type="number" min="1" value="3"></div><div class="field"><label>Travelers</label><input id="aiPeople" type="number" min="1" value="2"></div><div class="field"><label>Budget (৳)</label><input id="aiBudget" type="number" value="15000"></div></div><br><button class="btn green" onclick="generateAI()">✨ Generate My Trip</button><div id="aiResult" class="result">Your personalized itinerary will appear here.</div></div></section>
+
+<section id="liveweather"><div class="title"><h2>🌦️ Live Weather & Smart Alerts</h2><p>Live forecast from Open-Meteo. No API key required for non-commercial use.</p></div><div class="panel"><div class="form"><div class="field"><label>Destination</label><select id="weatherPlace"><option value="Cox's Bazar">Cox's Bazar</option><option value="Sajek Valley">Sajek Valley</option><option value="Sundarbans">Sundarbans</option><option value="Sylhet">Sylhet</option><option value="Paharpur">Paharpur</option><option value="Bandarban">Bandarban</option></select></div><div class="field"><label>Forecast days</label><select id="weatherDays"><option value="3">3</option><option value="7" selected>7</option><option value="10">10</option></select></div></div><br><button class="btn green" onclick="loadWeather()">Get Live Weather</button><div id="weatherResult" class="result">Choose a destination and load the live forecast.</div></div></section>
+
+<section id="routes"><div class="title"><h2>🧭 Verified Route Planner</h2><p>Uses OpenRouteService when an API key is configured; otherwise opens a direct Google Maps route.</p></div><div class="panel"><div class="form"><div class="field"><label>From</label><input id="routeFrom" placeholder="Dhaka"></div><div class="field"><label>To</label><select id="routeTo"><option>Cox's Bazar</option><option>Sajek Valley</option><option>Sundarbans</option><option>Sylhet</option><option>Paharpur</option><option>Bandarban</option></select></div><div class="field"><label>ORS API key (optional)</label><input id="orsKey" type="password" placeholder="Paste your OpenRouteService key"><small class="muted">Stored only in this browser.</small></div></div><br><button class="btn dark" onclick="planRoute()">Plan Route</button><div id="routeResult" class="result">Route distance/time will appear here.</div></div></section>
+
+
+<section id="services"><div class="title"><h2>🏨🍛🏥 Live Local Services</h2><p>Verified OpenStreetMap/Overpass data for nearby hotels, restaurants, hospitals, pharmacies, police and ferry/boat points.</p></div><div class="panel"><div class="form"><div class="field"><label>Destination</label><select id="poiPlace"></select></div><div class="field"><label>Service</label><select id="poiType"><option value="hotel">🏨 Hotels / Guesthouses</option><option value="restaurant">🍛 Restaurants / Food</option><option value="hospital">🏥 Hospitals / Clinics</option><option value="pharmacy">💊 Pharmacies</option><option value="police">👮 Police / Tourist support</option><option value="ferry">🚤 Ferry / Boat points</option></select></div><div class="field"><label>Radius</label><select id="poiRadius"><option value="3000">3 km</option><option value="5000" selected>5 km</option><option value="10000">10 km</option><option value="20000">20 km</option></select></div></div><br><button class="btn green" onclick="loadPOI()">🔎 Find Nearby Services</button><div id="poiResult" class="result">Choose a destination and service type.</div></div></section>
+
+<section id="budget"><div class="title"><h2>💰 Smart Budget Calculator</h2><p>Estimate hotel + food + transport + activities.</p></div><div class="panel"><div class="form"><div class="field"><label>Days</label><input id="days" type="number" value="3" min="1"></div><div class="field"><label>Travelers</label><input id="people" type="number" value="2" min="1"></div><div class="field"><label>Hotel/night (৳)</label><input id="hotel" type="number" value="1800"></div><div class="field"><label>Food/person/day (৳)</label><input id="food" type="number" value="700"></div><div class="field"><label>Transport/person (৳)</label><input id="transport" type="number" value="1500"></div><div class="field"><label>Activities/person (৳)</label><input id="activities" type="number" value="800"></div></div><br><button class="btn" onclick="calculate()">Calculate</button><div id="budgetResult" class="result">Estimated trip budget will appear here.</div></div></section>
+
+<section id="services" class="features"><div class="title"><h2>🧰 Complete Traveler Toolkit</h2><p>Everything your hackathon concept promised — organized into one dashboard.</p></div><div class="cards">
+<div class="feature"><h3>🌦️ Weather & best season</h3><p>Live temperature, precipitation, wind, forecast and trip-readiness indicators.</p><button class="btn small green" onclick="openInfo('Weather')">Open</button></div>
+<div class="feature"><h3>🏨 Stay finder</h3><p>Budget, mid-range and luxury stay cards with location and estimated price.</p><button class="btn small green" onclick="openInfo('Hotels')">Open</button></div>
+<div class="feature"><h3>🚗 Transport planner</h3><p>Bus, train, flight, CNG, car rental and local jeep planning.</p><button class="btn small green" onclick="openInfo('Transport')">Open</button></div>
+<div class="feature"><h3>🍛 Local food guide</h3><p>Must-try dishes, food price range and local food experiences.</p><button class="btn small green" onclick="openInfo('Food')">Open</button></div>
+<div class="feature"><h3>🏥 Emergency & medical</h3><p>Hospital, pharmacy, police, tourist police and emergency guidance.</p><button class="btn small green" onclick="openInfo('Emergency')">Open</button></div>
+<div class="feature"><h3>🚤 Boat & launch</h3><p>Boat routes, trip duration, fare estimates and safety reminders.</p><button class="btn small green" onclick="openInfo('Boat')">Open</button></div>
+<div class="feature"><h3>🥾 Trekking guide</h3><p>Trail difficulty, guide need, estimated time and preparation checklist.</p><button class="btn small green" onclick="openInfo('Trekking')">Open</button></div>
+<div class="feature"><h3>📸 Hidden gems</h3><p>Less-crowded places and local experiences beyond the usual tourist list.</p><button class="btn small green" onclick="openInfo('Hidden Gems')">Open</button></div>
+<div class="feature"><h3>📶 Offline travel pack</h3><p>Save itinerary, essential contacts and destination notes in your browser.</p><button class="btn small green" onclick="saveOffline()">Save Pack</button></div>
+<div class="feature"><h3>🔔 Smart alerts</h3><p>Live weather conditions can trigger rain/wind/travel-readiness alerts.</p><button class="btn small green" onclick="openInfo('Alerts')">Open</button></div>
+<div class="feature"><h3>♻️ Eco-tourism</h3><p>Eco score, plastic reduction, local business support and responsible travel tips.</p><button class="btn small green" onclick="openInfo('Eco')">Open</button></div>
+<div class="feature"><h3>🏆 Travel badges</h3><p>Gamify exploration with district, beach, hill, forest and food badges.</p><button class="btn small green" onclick="openBadges()">View badges</button></div>
+</div></section>
+
+<section id="stay"><div class="title"><h2>🏨 Sample stays & 🍛 food</h2><p>Nearby services use live OpenStreetMap/Overpass where available. These sample stay/food cards are planning examples, not booking inventory.</p></div><div class="split"><div class="panel"><h3>Recommended stays</h3><div class="list"><div class="item"><b>Sea View Budget Hotel</b><br><span class="muted">Cox's Bazar • ৳1,500–3,000/night • ⭐ 4.3</span></div><div class="item"><b>Hill Cloud Resort</b><br><span class="muted">Sajek • ৳2,500–5,500/night • ⭐ 4.5</span></div><div class="item"><b>Forest Edge Eco Lodge</b><br><span class="muted">Sundarbans region • ৳2,000–4,500/night • ⭐ 4.2</span></div></div></div><div class="panel"><h3>Must-try local food</h3><div class="list"><div class="item">🐟 <b>Shutki & seafood</b> — Cox's Bazar</div><div class="item">🍗 <b>Bamboo chicken</b> — Hill Tracts</div><div class="item">☕ <b>Seven-layer tea</b> — Sylhet</div><div class="item">🍚 <b>Regional Bengali dishes</b> — across Bangladesh</div></div></div></div></section>
+
+<section id="safety"><div class="title"><h2>🛡️ Safety, health & responsible travel</h2><p>Make safety visible before the traveler books a trip.</p></div><div class="split"><div class="panel"><h3>Destination safety score</h3><p>⛰️ Bandarban <b>8.1/10</b></p><div class="score"><i style="width:81%"></i></div><p>🏖️ Cox's Bazar <b>8.7/10</b></p><div class="score"><i style="width:87%"></i></div><p>🌳 Sundarbans <b>7.9/10</b></p><div class="score"><i style="width:79%"></i></div><p>🌊 Sylhet <b>8.6/10</b></p><div class="score"><i style="width:86%"></i></div></div><div class="panel"><h3>🚨 Important reminders</h3><div class="alert">Carry ID, emergency medicine and enough water on remote trips.</div><br><div class="alert danger">Weather and road conditions can change quickly. Check current official/local updates before departure.</div><br><div class="alert">For boats and trekking, use authorized operators/guides and follow local safety instructions.</div></div></div></section>
+
+<section id="hidden"><div class="title"><h2>📸 Hidden Gems & Experiences</h2><p>Encourage travelers to explore beyond the obvious attractions.</p></div><div class="cards"><div class="card"><div class="body"><span class="tag">LESS CROWDED</span><h3>Local village experience</h3><p class="meta">Stay with local hosts, try regional food and support community tourism.</p></div></div><div class="card"><div class="body"><span class="tag">NATURE</span><h3>Tea garden sunrise</h3><p class="meta">Slow travel, photography and local tea culture around Sylhet.</p></div></div><div class="card"><div class="body"><span class="tag">CULTURE</span><h3>Heritage trail</h3><p class="meta">Build a route around archaeology, mosques, temples and historic settlements.</p></div></div></div></section>
+
+<section id="saved"><div class="title"><h2>❤️ Saved trips & reviews</h2><p>Your wishlist is stored in this browser for the prototype.</p></div><div class="panel"><div id="savedList" class="list"><p class="muted">No saved destinations yet. Tap “Save” on a destination card.</p></div></div></section>
+
+<section><div class="title"><h2>⭐ Community reviews</h2><p>A demo review layer for the hackathon UI.</p></div><div class="cards"><div class="feature">“The budget planner makes the trip idea much easier to understand.”<br><br><b>— Demo traveler</b> ⭐⭐⭐⭐⭐</div><div class="feature">“I love having medical, food and transport information beside the destination.”<br><br><b>— Demo traveler</b> ⭐⭐⭐⭐</div><div class="feature">“The eco and safety score makes responsible travel visible.”<br><br><b>— Demo traveler</b> ⭐⭐⭐⭐⭐</div></div></section>
+
+
+<section id="verified-data" style="background:#eef7f2">
+  <div class="title">
+    <h2>✅ Verified Bangladesh Data Center</h2>
+    <p>Government directory data is separated from live POI and planning-estimate data.</p>
+  </div>
+  <div class="split">
+    <div class="panel">
+      <h3>🇧🇩 64 District Directory</h3>
+      <p class="muted">District names are based on the Bangladesh National Portal. Use the official portal for district-level verification.</p>
+      <div class="form">
+        <div class="field">
+          <label>Search district</label>
+          <input id="districtSearch" placeholder="e.g. Cox's Bazar">
+        </div>
+        <div class="field">
+          <label>Division</label>
+          <select id="divisionFilter"><option value="">All divisions</option></select>
+        </div>
+      </div>
+      <div id="verifiedDistrictResults" class="poi-grid"></div>
+    </div>
+    <div class="panel">
+      <h3>🚨 Official emergency contacts</h3>
+      <div id="emergencyResults" class="list"></div>
+      <p class="source">Source: Bangladesh National Portal. Keep these contacts separate from user-generated reviews.</p>
+      <div class="actions">
+        <a class="btn small green" target="_blank" rel="noopener" href="https://bangladesh.gov.bd/">Bangladesh National Portal ↗</a>
+        <a class="btn small green" target="_blank" rel="noopener" href="https://tourismboard.gov.bd/">Bangladesh Tourism Board ↗</a>
+        <a class="btn small green" target="_blank" rel="noopener" href="https://parjatan.gov.bd/">Bangladesh Parjatan Corporation ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="emergency-helplines" style="background:#fff7f5">
+  <div class="title">
+    <h2>🚨 Emergency & Government Helplines</h2>
+    <p>Official Bangladesh helplines — tap a number to call from a mobile device.</p>
+  </div>
+  <div class="form">
+    <div class="field">
+      <label>Search helpline</label>
+      <input id="helplineSearch" placeholder="999, Fire, Police, Child...">
+    </div>
+    <div class="field">
+      <label>Category</label>
+      <select id="helplineCategory"><option value="">All categories</option></select>
+    </div>
+  </div>
+  <div id="helplineGrid" class="poi-grid"></div>
+  <p class="source">Verified against Bangladesh National Portal and Bangladesh Police official hotline listings. Always confirm the latest details from the linked official source.</p>
+</section>
+
+
+<section id="tourist-database" style="background:#f5faf7">
+  <div class="title">
+    <h2>🗺️ Bangladesh Tourist Spot Database</h2>
+    <p>64 districts covered with structured destination-planning information.</p>
+  </div>
+  <div class="form">
+    <div class="field"><label>Search spot/district</label><input id="spotSearch" placeholder="Cox's Bazar, Paharpur, Sylhet..."></div>
+    <div class="field"><label>District</label><select id="spotDistrict"><option value="">All districts</option></select></div>
+    <div class="field"><label>Best season</label><select id="spotSeason"><option value="">All seasons</option><option value="Nov-Feb">Nov-Feb</option><option value="Nov-Mar">Nov-Mar</option><option value="Jun-Sep">Jun-Sep</option></select></div>
+  </div>
+  <div id="spotGrid" class="poi-grid"></div>
+</section>
+
+
+<section id="power-features">
+  <div class="title"><h2>🚀 BDTravel Power Center</h2><p>New community, passport, profile, alerts and offline features for the 64-district journey.</p></div>
+  <div class="power-grid">
+    <div class="power-card">
+      <h3>👤 User Profile & Cloud Account</h3><p class="muted">Create a profile locally, or connect a Supabase account to sync your data across devices.</p>
+      <div class="form"><div class="field"><label>Name</label><input id="profileName" placeholder="Your name"></div><div class="field"><label>Home district</label><input id="profileDistrict" placeholder="Dhaka"></div><div class="field"><label>Email (cloud login)</label><input id="authEmail" type="email" placeholder="you@example.com"></div><div class="field"><label>Password</label><input id="authPassword" type="password" placeholder="Minimum 6 characters"></div></div>
+      <br><button class="btn green" onclick="saveProfile()">Save Profile</button><button class="btn dark small" onclick="signUpBD()">Create Cloud Account</button><button class="btn ghost small" onclick="signInBD()">Sign In</button><button class="btn small ghost" onclick="signOutBD()">Sign Out</button><button class="btn small ghost" onclick="logoutProfile()">Reset Local</button>
+      <div id="profileResult" class="result">Not signed in on this device.</div><div id="dbStatus" class="source">Database: local prototype</div>
+    </div>
+    <div class="power-card">
+      <h3>🏆 64 District Travel Passport</h3><p>Mark districts you have visited and unlock explorer milestones.</p>
+      <div class="hero-result"><span id="passportCount">0</span>/64 districts</div>
+      <div class="progress"><span id="passportProgress"></span></div><br>
+      <div class="form"><div class="field"><label>Mark visited district</label><select id="passportDistrict"></select></div></div>
+      <br><button class="btn green" onclick="markVisited()">✓ Stamp Passport</button>
+      <button class="btn small ghost" onclick="openPassport()">View Passport</button>
+      <div id="passportBadges" class="badge-row"></div>
+    </div>
+    <div class="power-card">
+      <h3>📸 Community Photo Upload</h3><p>Share a travel photo. With Supabase configured, images are uploaded to cloud storage.</p>
+      <input id="photoFile" type="file" accept="image/*" onchange="previewPhoto(event)">
+      <img id="photoPreview" class="photo-preview" hidden>
+      <div class="form"><div class="field"><label>Caption</label><input id="photoCaption" placeholder="Sunset at Cox's Bazar"></div></div>
+      <br><button class="btn green" onclick="savePhoto()">Add to Community</button>
+    </div>
+    <div class="power-card">
+      <h3>⭐ User Reviews & Ratings</h3><p>Post a rating for a destination. With Supabase configured, reviews are stored in PostgreSQL.</p>
+      <div class="form"><div class="field"><label>Destination</label><select id="reviewPlace"></select></div><div class="field"><label>Rating</label><select id="reviewRating"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></div></div>
+      <br><textarea id="reviewText" rows="3" placeholder="What did you like?"></textarea><br><br><button class="btn green" onclick="addReview()">Post Review</button>
+    </div>
+  </div>
+  <br>
+  <div class="panel">
+    <h3>🌐 Community Feed</h3>
+    <div id="communityFeed" class="cards"></div>
+  </div>
+</section>
+
+<section id="alerts">
+  <div class="title"><h2>🚦 Live Travel & Safety Alert Center</h2><p>Combines live weather warnings with disaster updates when the public feeds are reachable.</p></div>
+  <div class="power-grid">
+    <div class="power-card"><h3>🌦️ Weather risk</h3><p class="muted">Load the destination forecast above to see rain/wind warnings.</p><button class="btn green" onclick="document.getElementById('liveweather').scrollIntoView()">Open Weather</button></div>
+    <div class="power-card"><h3>🆘 Official emergency</h3><p>Bangladesh emergency services are available from the verified data center.</p><button class="btn dark" onclick="document.getElementById('emergency-helplines').scrollIntoView()">Emergency Contacts</button></div>
+    <div class="power-card alert-card"><h3>📡 Disaster feed</h3><div id="liveAlertResult">Loading latest Bangladesh-related disaster updates…</div></div>
+  </div>
+</section>
+
+<section id="offline">
+  <div class="title"><h2>📡 Offline Travel Mode</h2><p>Install the site and keep your saved trips, passport, reviews and core destination data available without internet.</p></div>
+  <div class="panel">
+    <div class="actions"><button class="btn green" onclick="enableOffline()">📥 Prepare Offline Mode</button><button class="btn ghost" onclick="saveOffline()">💾 Save My Travel Pack</button></div>
+    <div id="offlineStatus" class="result">Offline mode has not been prepared yet.</div>
+  </div>
+</section>
+
+<footer class="footer"><strong>BDTravel — Smart Bangladesh Tourism</strong><br><br>Plan • Discover • Budget • Stay • Eat • Move • Trek • Sail • Stay Safe • Travel Responsibly<br><br><small>Hackathon prototype. Live weather, maps, hotel availability, emergency numbers and prices should be connected to verified APIs/data before public launch.</small></footer>
+
+<div id="modal" class="modal"><div class="modalbox"><button class="close" onclick="closeModal()">×</button><div id="modalContent"></div></div></div><div id="toast" class="toast"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js" onerror="window.BDTRAVEL_SUPABASE=window.BDTRAVEL_SUPABASE||null"></script>
+<script>
+window.BDDB={client:null,user:null,ready:false,init(){const c=window.BDTRAVEL_SUPABASE;if(!c||!c.url||!c.anonKey||c.url.includes('YOUR-PROJECT'))return;try{this.client=supabase.createClient(c.url,c.anonKey);this.ready=true;this.client.auth.getUser().then(({data})=>{this.user=data.user||null;updateDBStatus()});this.client.auth.onAuthStateChange((_e,session)=>{this.user=session?.user||null;updateDBStatus()})}catch(e){console.warn('Supabase init failed',e)}},async profile(p){if(!this.ready||!this.user)return;await this.client.from('profiles').upsert({id:this.user.id,name:p.name,home_district:p.district,updated_at:new Date().toISOString()})},async wishlist(name){if(!this.ready||!this.user)return;await this.client.from('wishlist').upsert({user_id:this.user.id,destination_name:name})},async removeWishlist(name){if(!this.ready||!this.user)return;await this.client.from('wishlist').delete().match({user_id:this.user.id,destination_name:name})},async visit(name){if(!this.ready||!this.user)return;const {data}=await this.client.from('districts').select('id').eq('name',name).maybeSingle();if(data)await this.client.from('travel_passport').upsert({user_id:this.user.id,district_id:data.id})},async review(x){if(!this.ready||!this.user)return;await this.client.from('reviews').insert({user_id:this.user.id,destination_name:x.place,rating:x.rating,review_text:x.text})},async photo(file,caption){if(!this.ready||!this.user)return null;const path=this.user.id+'/'+crypto.randomUUID()+'-'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const up=await this.client.storage.from('community-photos').upload(path,file,{upsert:false});if(up.error)throw up.error;const pub=this.client.storage.from('community-photos').getPublicUrl(path).data.publicUrl;await this.client.from('photos').insert({user_id:this.user.id,caption:caption||'Travel moment',image_url:pub});return pub}};
+function updateDBStatus(){const el=document.getElementById('dbStatus');if(!el)return;el.textContent=BDDB.ready?(BDDB.user?'Database: Supabase connected ✓':'Database: Supabase ready — sign in to sync'): 'Database: local prototype — add supabase-config.js to enable cloud sync'}
+BDDB.init();
+async function signUpBD(){const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;if(!BDDB.ready){toast('First configure supabase-config.js');return}if(!email||password.length<6){toast('Enter email and a 6+ character password');return}const {error}=await BDDB.client.auth.signUp({email,password,data:{name:document.getElementById('profileName').value.trim()||'Traveler'}});toast(error?error.message:'Account created. Check your email if confirmation is enabled.')}
+async function signInBD(){const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;if(!BDDB.ready){toast('First configure supabase-config.js');return}const {error}=await BDDB.client.auth.signInWithPassword({email,password});toast(error?error.message:'Signed in ✓')}
+async function signOutBD(){if(BDDB.ready)await BDDB.client.auth.signOut();toast('Signed out')}
+</script>
+
+<script>
+const data=[
+{name:"Cox's Bazar",type:"Beach",season:"Winter",months:"Nov–Feb",cost:"৳4,000–৳12,000/person",hotel:"Budget hotels, resorts & guesthouses",transport:"Bus / train / flight",activities:"Beach, Himchari, Inani, Marine Drive, boat trips",food:"Shutki, seafood, Bengali food",medical:"Hospitals & pharmacies in town",travel:["Family","Couple","Solo","Friends"],eco:7.5,safety:8.7,lat:21.4272,lng:92.0058,img:"https://images.unsplash.com/photo-1596402184320-417e7178b2cd?auto=format&fit=crop&w=900&q=80"},
+{name:"Sajek Valley",type:"Hill",season:"Winter",months:"Oct–Mar",cost:"৳3,500–৳9,000/person",hotel:"Resorts, cottages & homestays",transport:"Bus + local jeep/Chander Gari",activities:"Hiking, clouds, viewpoints, tribal villages",food:"Bamboo chicken, hill cuisine",medical:"Basic facilities; carry essential medicine",travel:["Couple","Friends","Adventure","Solo"],eco:8.4,safety:8.0,lat:23.3815,lng:92.2930,img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80"},
+{name:"Sundarbans",type:"Forest",season:"Winter",months:"Nov–Feb",cost:"৳6,000–৳18,000/person",hotel:"Khulna/Mongla stays + tour boats",transport:"Bus/train + launch/boat",activities:"Wildlife cruise, forest trails, bird watching",food:"Boat meals, fish & Bengali dishes",medical:"Limited inside forest; prepare before departure",travel:["Family","Friends","Adventure","Solo"],eco:9.2,safety:7.9,lat:21.9497,lng:89.1833,img:"https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=900&q=80"},
+{name:"Sylhet",type:"Wetland",season:"Monsoon",months:"Jun–Sep",cost:"৳3,000–৳9,000/person",hotel:"Hotels, resorts & guesthouses",transport:"Train / bus / flight",activities:"Jaflong, Ratargul, Bichanakandi, tea gardens",food:"Seven-layer tea, pitha, local dishes",medical:"Hospitals & pharmacies in city",travel:["Family","Couple","Friends","Solo"],eco:8.6,safety:8.6,lat:24.8949,lng:91.8687,img:"https://images.unsplash.com/photo-1533130061792-64b345e4a833?auto=format&fit=crop&w=900&q=80"},
+{name:"Paharpur",type:"Heritage",season:"Winter",months:"Nov–Feb",cost:"৳2,000–৳5,000/person",hotel:"Local hotels & guesthouses",transport:"Bus/train + local transport",activities:"Somapura Mahavihara, archaeology, village tour",food:"Regional food",medical:"Clinics/pharmacies; larger facilities nearby",travel:["Family","Solo","Friends","Couple"],eco:8.0,safety:8.8,lat:25.0310,lng:88.9790,img:"https://images.unsplash.com/photo-1599571234909-29ed5d1321d6?auto=format&fit=crop&w=900&q=80"},
+{name:"Bandarban",type:"Hill",season:"Winter",months:"Oct–Mar",cost:"৳4,000–৳12,000/person",hotel:"Resorts, hotels & homestays",transport:"Bus + local jeep",activities:"Nilgiri, Nilachal, trekking, waterfalls",food:"Hill cuisine, bamboo chicken",medical:"Facilities in town; remote trails need preparation",travel:["Friends","Adventure","Couple","Solo"],eco:8.7,safety:8.1,lat:22.1953,lng:92.2184,img:"https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=80"}
+];
+let active="";let saved=JSON.parse(localStorage.getItem('bdtravelSaved')||'[]');
+function render(){const q=document.getElementById('search').value.toLowerCase(),s=document.getElementById('season').value,t=document.getElementById('travelType').value;const list=data.filter(x=>(!active||x.type===active)&&(!q||x.name.toLowerCase().includes(q))&&(!s||x.season===s)&&(!t||x.travel.includes(t)));document.getElementById('cards').innerHTML=list.map(card).join('')||'<p>No matching destination found.</p>';updateSaved()}
+function card(x){const is=saved.includes(x.name);return `<article class="card"><img src="${x.img}" alt="${x.name}"><div class="body"><span class="tag">${x.type}</span><h3>${x.name}</h3><div class="meta">🗓️ <b>Best:</b> ${x.months}<br>🚍 ${x.transport}<br>🏨 ${x.hotel}<br>🎒 ${x.activities}<br>🥘 ${x.food}<br>🚑 ${x.medical}<br>🛡️ Safety ${x.safety}/10 • ♻️ Eco ${x.eco}/10</div><div class="price">Estimated: ${x.cost}</div><div class="actions"><button class="btn small" onclick="generateFor('${x.name}')">Plan trip</button><button class="btn small ghost" onclick="toggleSave('${x.name}')">${is?'♥ Saved':'♡ Save'}</button><button class="btn small ghost" onclick="showDestination('${x.name}')">Details</button><button class="btn small ghost" onclick="openRouteFor('${x.name}')">Route</button></div></div></article>`}
+function setFilter(x){active=x;document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');render()}
+function toggleSave(name){saved=saved.includes(name)?saved.filter(x=>x!==name):[...saved,name];localStorage.setItem('bdtravelSaved',JSON.stringify(saved));render();toast(saved.includes(name)?'Saved to your wishlist ❤️':'Removed from wishlist')}
+function updateSaved(){document.getElementById('savedCount').textContent=saved.length;document.getElementById('savedList').innerHTML=saved.length?saved.map(n=>`<div class="item"><b>${n}</b> <button class="btn small ghost" onclick="showDestination('${n}')">Open</button> <button class="btn small" onclick="toggleSave('${n}')">Remove</button></div>`).join(''):'<p class="muted">No saved destinations yet.</p>'}
+function calculate(){let d=+days.value,p=+people.value,h=+hotel.value,f=+food.value,t=+transport.value,a=+activities.value;let ht=h*d,fd=f*d*p,tr=t*p,ac=a*p,total=ht+fd+tr+ac;budgetResult.innerHTML=`<div class="hero-result">Estimated total: ৳${total.toLocaleString()}</div>Hotel: ৳${ht.toLocaleString()} • Food: ৳${fd.toLocaleString()} • Transport: ৳${tr.toLocaleString()} • Activities: ৳${ac.toLocaleString()}<br><small>Planning estimate only; prices must be verified.</small>`}
+function generateAI(){let name=aiPlace.value,style=aiStyle.value,d=+aiDays.value,p=+aiPeople.value,b=+aiBudget.value,x=data.find(v=>v.name===name);let daily=Math.max(1,Math.floor(b/d/p));let focus=style==='Adventure'?'trekking + viewpoints':style==='Family'?'relaxed sightseeing + food':style==='Couple'?'scenic spots + sunset':style==='Solo'?'local culture + flexible exploration':'group activities + local food';let days=[];for(let i=1;i<=d;i++){let act=i===1?`Arrival, check-in, ${x.activities.split(',')[0]}`:i===d?`Slow morning, local food, souvenir shopping and return`:x.activities.split(',').slice(1,3).join(' + ');days.push(`<b>Day ${i}:</b> ${act} — focus: ${focus}`)}aiResult.innerHTML=`<div class="hero-result">✨ ${d}-day ${style} plan for ${name}</div><p>Target budget: ৳${b.toLocaleString()} • Approx. daily/person allowance: ৳${daily.toLocaleString()}</p>${days.map(x=>`<div class="item">${x}</div>`).join('')}<br><b>Smart tips:</b> Best season ${x.months}; safety ${x.safety}/10; eco ${x.eco}/10. Carry essentials and verify current local conditions.`}
+function generateFor(name){aiPlace.value=name;document.getElementById('ai').scrollIntoView();generateAI()}
+function showDestination(name){let x=data.find(v=>v.name===name);openModal(`<span class="tag">${x.type}</span><h2>${x.name}</h2><p>${x.activities}</p><div class="cards"><div class="item">🗓️ <b>Best season:</b> ${x.months}</div><div class="item">💰 <b>Budget:</b> ${x.cost}</div><div class="item">🚗 <b>Transport:</b> ${x.transport}</div><div class="item">🏨 <b>Stay:</b> ${x.hotel}</div><div class="item">🍛 <b>Food:</b> ${x.food}</div><div class="item">🏥 <b>Medical:</b> ${x.medical}</div><div class="item">🛡️ <b>Safety:</b> ${x.safety}/10</div><div class="item">♻️ <b>Eco:</b> ${x.eco}/10</div></div>`)}
+function openInfo(type){const info={Weather:'Live weather is connected to Open-Meteo. The dashboard reads current temperature, precipitation, wind and daily forecast for each destination.',Hotels:'Connect verified hotel listings or a booking provider. Add filters for budget, rating, distance and family/couple suitability.',Transport:'Add route search, bus/train schedules, fare estimates, local CNG/jeep and car rental information.',Food:'Add local dishes, price ranges, restaurant cards, halal/vegetarian filters and user reviews.',Emergency:'Show verified hospitals, pharmacies, police/tourist police and emergency contacts with map directions.',Boat:'Add authorized boat operators, route, duration, fare, capacity and weather safety warnings.',Trekking:'Add trail length, difficulty, elevation, guide requirement, permit information and emergency preparation.', 'Hidden Gems':'Add community-sourced less-crowded destinations with moderation and local guide profiles.',Alerts:'Weather alerts are generated from live Open-Meteo forecast data. Route planning can use OpenRouteService when an API key is supplied.',Eco:'Calculate an eco score using waste, local-business support, transport and nature-protection factors.'};openModal(`<h2>${type}</h2><p>${info[type]}</p><div class="alert">Hackathon tip: clearly label demo/mock data and show the future API integration path to judges.</div>`)}
+function openBadges(){openModal('<h2>🏆 Travel Badges</h2><div class="cards"><div class="item">🏖️ Beach Lover<br><small>Visit 3 beach destinations</small></div><div class="item">⛰️ Hill Explorer<br><small>Complete 2 hill trips</small></div><div class="item">🌳 Forest Guardian<br><small>Complete an eco trip</small></div><div class="item">🍛 Food Hunter<br><small>Try 10 local dishes</small></div><div class="item">🗺️ Bangladesh Explorer<br><small>Explore 10 districts</small></div></div>')}
+function saveOffline(){localStorage.setItem('bdtravelOfflinePack',JSON.stringify({saved,updated:new Date().toISOString()}));toast('Offline travel pack saved in this browser 📶')}
+function openModal(html){modalContent.innerHTML=html;modal.classList.add('show')}function closeModal(){modal.classList.remove('show')}function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2200)}
+let place=data[0];data.forEach(x=>{aiPlace.innerHTML+=`<option>${x.name}</option>`; document.getElementById('poiPlace').innerHTML+=`<option>${x.name}</option>`;});render();calculate();
+
+const weatherCodes={0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Rime fog',51:'Light drizzle',53:'Moderate drizzle',55:'Dense drizzle',61:'Slight rain',63:'Moderate rain',65:'Heavy rain',71:'Slight snow',73:'Moderate snow',75:'Heavy snow',80:'Rain showers',81:'Moderate rain showers',82:'Violent rain showers',95:'Thunderstorm',96:'Thunderstorm with hail',99:'Thunderstorm with heavy hail'};
+function weatherX(name){return data.find(v=>v.name===name)}
+async function loadWeather(){
+  const x=weatherX(document.getElementById('weatherPlace').value), days=document.getElementById('weatherDays').value, box=document.getElementById('weatherResult');
+  box.innerHTML='⏳ Loading live weather…';
+  try{
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${x.lat}&longitude=${x.lng}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,sunrise,sunset&forecast_days=${days}&timezone=auto`;
+    const r=await fetch(url); if(!r.ok) throw new Error('Weather service error'); const j=await r.json();
+    const c=j.current, d=j.daily;
+    const rain=Math.max(...(d.precipitation_probability_max||[0]));
+    const alert=rain>=70?'⚠️ High rain probability — reconsider outdoor/boat activities.':c.wind_speed_10m>=35?'⚠️ Strong wind — check local safety guidance before travel.':'✅ No major weather warning from the selected forecast indicators.';
+    box.innerHTML=`<div class="hero-result">${x.name}: ${Math.round(c.temperature_2m)}°C • ${weatherCodes[c.weather_code]||'Weather'} </div><div>Feels like ${Math.round(c.apparent_temperature)}°C • Humidity ${c.relative_humidity_2m}% • Rain now ${c.precipitation} mm • Wind ${Math.round(c.wind_speed_10m)} km/h</div><div class="alert ${rain>=70||c.wind_speed_10m>=35?'danger':''}">${alert}</div><div class="cards">${d.time.map((date,i)=>`<div class="item"><b>${new Date(date+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}</b><br>${weatherCodes[d.weather_code[i]]||'Weather'}<br>🌡️ ${Math.round(d.temperature_2m_min[i])}–${Math.round(d.temperature_2m_max[i])}°C<br>🌧️ ${d.precipitation_probability_max[i]}% rain<br>💨 ${Math.round(d.wind_speed_10m_max[i])} km/h</div>`).join('')}</div><small class="muted">Source: Open-Meteo forecast API. Attribution/licence applies.</small>`;
+  }catch(e){box.innerHTML='❌ Could not load live weather right now. Please try again.'}
+}
+function openRouteFor(name){document.getElementById('routeTo').value=name;document.getElementById('routes').scrollIntoView({behavior:'smooth'});}
+async function planRoute(){
+  const from=document.getElementById('routeFrom').value.trim(), to=document.getElementById('routeTo').value, key=document.getElementById('orsKey').value.trim(), box=document.getElementById('routeResult');
+  if(!from){box.innerHTML='Please enter a starting point.';return}
+  if(!key){const u=`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to+' Bangladesh')}&travelmode=driving`;box.innerHTML=`<div class="hero-result">Google Maps route ready</div><p>Open a verified live route in Google Maps.</p><a class="btn green" target="_blank" rel="noopener" href="${u}">Open Route</a>`;return}
+  localStorage.setItem('bdtravel_ors_key',key);
+  const x=weatherX(to); const geo=await geocodePlace(from); if(!geo){box.innerHTML='Could not locate the starting point. Try a city/district name.';return}
+  try{
+    const r=await fetch('https://api.openrouteservice.org/v2/directions/driving-car/geojson',{method:'POST',headers:{'Authorization':key,'Content-Type':'application/json'},body:JSON.stringify({coordinates:[[geo.lon,geo.lat],[x.lng,x.lat]]})});
+    if(!r.ok) throw new Error('Routing request failed'); const j=await r.json(); const s=j.features[0].properties.summary;
+    box.innerHTML=`<div class="hero-result">${(s.distance/1000).toFixed(1)} km • ~${Math.round(s.duration/60)} min</div><p>Route calculated with OpenRouteService.</p><small class="muted">Routing data is based on OpenStreetMap.</small>`;
+  }catch(e){box.innerHTML='❌ OpenRouteService request failed. Check your API key, then try again.'}
+}
+async function geocodePlace(q){
+  try{const key=document.getElementById('orsKey').value.trim();if(!key)return null;const u='https://api.openrouteservice.org/geocode/search?size=1&boundary.country=BD&text='+encodeURIComponent(q);const r=await fetch(u,{headers:{'Authorization':key}});if(!r.ok)throw new Error('Geocoding failed');const j=await r.json();const c=j.features&&j.features[0]&&j.features[0].geometry&&j.features[0].geometry.coordinates;return c?{lon:+c[0],lat:+c[1]}:null}catch(e){return null}
+}
+
+const poiTags={
+ hotel:'["tourism"="hotel"]["name"]',
+ restaurant:'["amenity"="restaurant"]["name"]',
+ hospital:'["amenity"="hospital"]["name"]',
+ pharmacy:'["amenity"="pharmacy"]["name"]',
+ police:'["amenity"="police"]["name"]',
+ ferry:'["amenity"="ferry_terminal"]["name"]'
+};
+function mapsSearch(name,lat,lon){return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name+' '+lat+','+lon)}`;}
+async function loadPOI(){
+ const name=document.getElementById('poiPlace').value, type=document.getElementById('poiType').value, radius=+document.getElementById('poiRadius').value, box=document.getElementById('poiResult'), x=weatherX(name);
+ box.innerHTML='⏳ Searching verified OpenStreetMap data…';
+ const tag=poiTags[type];
+ const q=`[out:json][timeout:25];(node(around:${radius},${x.lat},${x.lng})${tag};way(around:${radius},${x.lat},${x.lng})${tag};relation(around:${radius},${x.lat},${x.lng})${tag};);out center tags;`;
+ const endpoints=['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter'];
+ try{
+  let j=null;
+  for(const ep of endpoints){try{const r=await fetch(ep,{method:'POST',headers:{'Content-Type':'text/plain;charset=UTF-8'},body:q});if(r.ok){j=await r.json();break}}catch(e){}}
+  if(!j)throw new Error('Overpass unavailable');
+  const items=(j.elements||[]).map(e=>{const lat=e.lat??e.center?.lat,lon=e.lon??e.center?.lon,t=e.tags||{},addr=[t['addr:street'],t['addr:city'],t['addr:district']].filter(Boolean).join(', ');return {name:t.name||'Unnamed place',lat,lon,addr,phone:t.phone||t['contact:phone']||'',website:t.website||t['contact:website']||''}}).filter(v=>v.lat&&v.lon).slice(0,30);
+  if(!items.length){box.innerHTML=`<div class="alert">No mapped ${type} results found within ${radius/1000} km. This means OSM may not have the place mapped yet; it does not mean no service exists.</div><div class="source">Source: OpenStreetMap via Overpass API.</div>`;return}
+  box.innerHTML=`<div class="hero-result">${items.length} mapped result${items.length>1?'s':''} near ${name}</div><div class="poi-grid">${items.map(v=>`<div class="poi-card"><h4>${v.name}</h4><div class="meta">📍 ${v.addr||'Address not mapped'}${v.phone?`<br>📞 ${v.phone}`:''}</div><div class="actions"><a class="btn small green" target="_blank" rel="noopener" href="${mapsSearch(v.name,v.lat,v.lon)}">Directions</a>${v.website?`<a class="btn small ghost" target="_blank" rel="noopener" href="${v.website}">Website</a>`:''}</div></div>`).join('')}</div><p class="source">Source: OpenStreetMap data queried through Overpass API. OSM coverage varies by place; verify critical details before relying on them.</p>`;
+ }catch(e){box.innerHTML='❌ Live local-service search is temporarily unavailable. Try again in a moment.'}
+}
+
+document.getElementById('orsKey').value=localStorage.getItem('bdtravel_ors_key')||'';
+const map=L.map('map').setView([23.685,90.3563],7);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);data.forEach(x=>L.marker([x.lat,x.lng]).addTo(map).bindPopup(`<b>${x.name}</b><br>${x.type}<br><button onclick="showDestination('${x.name}')">Open profile</button>`));
+</script>
+
+<script>
+(async function(){
+  try{
+    const [dr, er] = await Promise.all([
+      fetch('data/districts-64.json').then(r=>r.json()),
+      fetch('data/emergency-bangladesh.json').then(r=>r.json())
+    ]);
+    const df=document.getElementById('divisionFilter');
+    const ds=document.getElementById('districtSearch');
+    const out=document.getElementById('verifiedDistrictResults');
+    const eo=document.getElementById('emergencyResults');
+    [...new Set(dr.map(x=>x.division))].sort().forEach(d=>{
+      const o=document.createElement('option'); o.value=d; o.textContent=d+' Division'; df.appendChild(o);
+    });
+    function render(){
+      const q=(ds.value||'').toLowerCase();
+      const div=df.value;
+      out.innerHTML=dr.filter(x=>(!q||x.district.toLowerCase().includes(q))&&(!div||x.division===div))
+        .map(x=>`<div class="poi-card">
+          <span class="tag">Government directory verified</span>
+          <h4>${x.district}</h4>
+          <div class="meta">${x.division} Division</div>
+          <div class="actions"><a class="btn small ghost" href="${x.official_portal}" target="_blank" rel="noopener">Official portal ↗</a></div>
+          <div class="source">Attractions: verify with BTB/BPC · Nearby POIs: live OSM/Overpass</div>
+        </div>`).join('');
+    }
+    ds.addEventListener('input',render); df.addEventListener('change',render); render();
+    eo.innerHTML=er.map(x=>`<div class="item"><b>${x.name}</b><div class="hero-result">${x.number}</div><div class="source">${x.source}</div></div>`).join('');
+  }catch(e){ console.warn('Verified data pack unavailable',e); }
+})();
+</script>
+
+
+<script>
+(async function(){
+  try{
+    const data = await fetch('data/emergency-helplines.json').then(r=>r.json());
+    const grid=document.getElementById('helplineGrid');
+    const search=document.getElementById('helplineSearch');
+    const cat=document.getElementById('helplineCategory');
+    [...new Set(data.map(x=>x.category))].sort().forEach(c=>{
+      const o=document.createElement('option'); o.value=c; o.textContent=c; cat.appendChild(o);
+    });
+    function render(){
+      const q=(search.value||'').toLowerCase();
+      const c=cat.value;
+      grid.innerHTML=data.filter(x=>
+        (!q || [x.name,x.number,x.category,x.description].join(' ').toLowerCase().includes(q)) &&
+        (!c || x.category===c)
+      ).map(x=>`
+        <div class="poi-card">
+          <span class="tag">${x.category}</span>
+          <h4>${x.name}</h4>
+          <div class="hero-result"><a href="tel:${x.number}">${x.number}</a></div>
+          <div class="meta">${x.description}</div>
+          <div class="actions">
+            <a class="btn small green" href="tel:${x.number}">📞 Call ${x.number}</a>
+            <a class="btn small ghost" href="${x.official_url}" target="_blank" rel="noopener">Official source ↗</a>
+          </div>
+          <div class="source">${x.source} · ${x.available}</div>
+        </div>`).join('');
+    }
+    search.addEventListener('input',render);
+    cat.addEventListener('change',render);
+    render();
+  }catch(e){ console.warn('Emergency helpline data unavailable',e); }
+})();
+</script>
+
+
+<script>
+(async function(){
+ try{
+  const data=await fetch('data/tourist-spots-64.json').then(r=>r.json());
+  const grid=document.getElementById('spotGrid'), search=document.getElementById('spotSearch');
+  const district=document.getElementById('spotDistrict'), season=document.getElementById('spotSeason');
+  [...new Set(data.map(x=>x.district))].sort().forEach(d=>{let o=document.createElement('option');o.value=d;o.textContent=d;district.appendChild(o)});
+  function card(x){
+   const maps='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(x.coordinates);
+   return `<div class="poi-card">
+    <span class="tag">${x.district}</span><h4>${x.spot}</h4>
+    <div class="meta">📍 ${x.coordinates}</div>
+    <div class="meta">🌦️ Best: <b>${x.best_season}</b></div>
+    <div class="hero-result">৳${x.estimated_cost_bdt_per_person}</div>
+    <div class="meta">🎯 ${x.activities}</div>
+    <div class="meta">🍛 ${x.food}</div>
+    <div class="meta">🏨 ${x.hotel}</div>
+    <div class="meta">🚗 ${x.transport}</div>
+    <div class="meta">🛡️ Safety: ${x.safety}</div>
+    <div class="meta">🏥 ${x.nearby_hospital}</div>
+    <div class="actions"><a class="btn small green" target="_blank" rel="noopener" href="${maps}">📍 Maps</a></div>
+    <div class="source">Planning dataset · Recheck current prices, routes, weather and medical availability.</div>
+   </div>`;
+  }
+  function render(){
+   let q=(search.value||'').toLowerCase(), d=district.value, s=season.value;
+   let arr=data.filter(x=>(!q||(x.district+' '+x.spot).toLowerCase().includes(q))&&(!d||x.district===d)&&(!s||x.best_season===s));
+   grid.innerHTML=arr.map(card).join('');
+  }
+  [search,district,season].forEach(e=>e.addEventListener('input',render));
+  render();
+ }catch(e){console.warn('Tourist database unavailable',e)}
+})();
+</script>
+
+
+<script>
+/* ===== BDTravel Power Center logic ===== */
+let profile=JSON.parse(localStorage.getItem('bdtravelProfile')||'null');
+let visited=new Set(JSON.parse(localStorage.getItem('bdtravelVisited')||'[]'));
+let reviews=JSON.parse(localStorage.getItem('bdtravelReviews')||'[]');
+let photos=JSON.parse(localStorage.getItem('bdtravelPhotos')||'[]');
+
+function saveProfile(){
+ const name=document.getElementById('profileName').value.trim(), district=document.getElementById('profileDistrict').value.trim();
+ if(!name){toast('Please enter your name');return}
+ profile={name,district};localStorage.setItem('bdtravelProfile',JSON.stringify(profile));BDDB.profile(profile);renderProfile();toast('Profile saved 👤');
+}
+function logoutProfile(){profile=null;localStorage.removeItem('bdtravelProfile');renderProfile();toast('Profile reset')}
+function renderProfile(){
+ const box=document.getElementById('profileResult');
+ if(profile){document.getElementById('profileName').value=profile.name||'';document.getElementById('profileDistrict').value=profile.district||'';box.innerHTML=`<b>Welcome, ${profile.name}!</b><br><small>Profile is stored locally on this device.</small>`}
+ else box.textContent='Not signed in on this device.';
+}
+function markVisited(){
+ const d=document.getElementById('passportDistrict').value;if(!d)return;
+ visited.add(d);localStorage.setItem('bdtravelVisited',JSON.stringify([...visited]));BDDB.visit(d);renderPassport();toast(`${d} passport stamp added 🏆`);
+}
+function renderPassport(){
+ const n=visited.size;document.getElementById('passportCount').textContent=n;
+ document.getElementById('passportProgress').style.width=(n/64*100)+'%';
+ const badges=[];if(n>=1)badges.push('🗺️ First Stamp');if(n>=10)badges.push('🥉 10 Districts');if(n>=25)badges.push('🥈 25 Districts');if(n>=40)badges.push('🥇 40 Districts');if(n===64)badges.push('🇧🇩 64 District Master');
+ document.getElementById('passportBadges').innerHTML=badges.map(x=>`<span class="badge">${x}</span>`).join('');
+}
+function openPassport(){
+ const all=[...document.getElementById('passportDistrict').options].map(o=>o.value).filter(Boolean);
+ openModal(`<h2>🏆 64 District Travel Passport</h2><p>Visited ${visited.size} of 64 districts.</p><div class="power-grid">${all.map(d=>`<div class="passport-stamp ${visited.has(d)?'visited':''}">${visited.has(d)?'✓ ':''}${d}</div>`).join('')}</div>`);
+}
+function previewPhoto(e){
+ const f=e.target.files[0],img=document.getElementById('photoPreview');if(!f)return;
+ if(f.size>2*1024*1024){toast('Please use an image under 2 MB');e.target.value='';return}
+ const r=new FileReader();r.onload=()=>{img.src=r.result;img.hidden=false};r.readAsDataURL(f);
+}
+function savePhoto(){
+ const file=document.getElementById('photoFile').files[0],caption=document.getElementById('photoCaption').value.trim();
+ if(!file){toast('Choose a photo first');return}
+ const r=new FileReader();r.onload=()=>{photos.unshift({src:r.result,caption:caption||'Travel moment',name:profile?.name||'Traveler',date:new Date().toLocaleDateString()});photos=photos.slice(0,12);localStorage.setItem('bdtravelPhotos',JSON.stringify(photos));BDDB.photo(file,caption).then(url=>{if(url){photos[0].src=url;localStorage.setItem('bdtravelPhotos',JSON.stringify(photos));renderCommunity();}}).catch(()=>{});renderCommunity();toast('Photo added 📸')};r.readAsDataURL(file);
+}
+function addReview(){
+ const place=document.getElementById('reviewPlace').value,text=document.getElementById('reviewText').value.trim(),rating=+document.getElementById('reviewRating').value;
+ if(!text){toast('Write a short review first');return}
+ const item={place,text,rating,name:profile?.name||'Traveler',date:new Date().toLocaleDateString()};reviews.unshift(item);reviews=reviews.slice(0,30);localStorage.setItem('bdtravelReviews',JSON.stringify(reviews));BDDB.review(item);document.getElementById('reviewText').value='';renderCommunity();toast('Review posted ⭐');
+}
+function renderCommunity(){
+ const feed=document.getElementById('communityFeed');
+ const rv=reviews.map(x=>`<div class="review"><div class="review-stars">${'★'.repeat(x.rating)}${'☆'.repeat(5-x.rating)}</div><b>${x.place}</b><p>${x.text}</p><small>— ${x.name}, ${x.date}</small></div>`);
+ const ph=photos.map(x=>`<div class="review"><img src="${x.src}" class="photo-preview"><br><b>${x.caption}</b><br><small>— ${x.name}, ${x.date}</small></div>`);
+ feed.innerHTML=(ph.concat(rv)).join('')||'<p class="muted">No community posts yet. Add the first photo or review.</p>';
+}
+async function loadLiveAlerts(){
+ const box=document.getElementById('liveAlertResult');
+ try{
+  const u='https://api.reliefweb.int/v1/disasters?appname=bdtravel&profile=list&preset=latest&limit=8&query[value]=Bangladesh';
+  const r=await fetch(u);if(!r.ok)throw new Error();
+  const j=await r.json(),items=(j.data||[]).slice(0,5);
+  box.innerHTML=items.length?items.map(x=>`<div class="item"><b>${x.fields?.name||'Bangladesh-related event'}</b><br><small>${x.fields?.date?.created||''}</small></div>`).join(''):'No current Bangladesh-related disaster entries found.';
+ }catch(e){box.innerHTML='Live disaster feed is temporarily unavailable. Check official emergency and weather sources before travel.'}
+}
+async function enableOffline(){
+ const status=document.getElementById('offlineStatus');
+ try{
+  if('serviceWorker' in navigator){await navigator.serviceWorker.register('./sw.js');}
+  await caches.open('bdtravel-core-v1');
+  saveOffline();
+  status.innerHTML='<b>✅ Offline Mode prepared.</b> Core page assets and your local travel pack can be reused when the connection drops.';
+  document.getElementById('offlineBanner').classList.toggle('show',!navigator.onLine);
+  toast('Offline mode ready 📡');
+ }catch(e){status.textContent='Offline preparation could not complete in this browser.'}
+}
+window.addEventListener('online',()=>document.getElementById('offlineBanner').classList.remove('show'));
+window.addEventListener('offline',()=>document.getElementById('offlineBanner').classList.add('show'));
+window.addEventListener('load',()=>{
+ const ds=document.getElementById('passportDistrict'),rp=document.getElementById('reviewPlace');
+ if(ds){fetch('data/districts-64.json').then(r=>r.json()).then(arr=>arr.forEach(x=>{let o=document.createElement('option');o.value=x.district;o.textContent=x.district;ds.appendChild(o)})).catch(()=>{})}
+ if(rp && typeof data!=='undefined') data.forEach(x=>{let o=document.createElement('option');o.value=x.name;o.textContent=x.name;rp.appendChild(o)});
+ renderProfile();renderPassport();renderCommunity();loadLiveAlerts();
+ if(!navigator.onLine)document.getElementById('offlineBanner').classList.add('show');
+});
+</script>
+</body></html>

@@ -1,0 +1,3 @@
+-- Seed catalogue data after running supabase-schema.sql.
+-- The website keeps the original JSON files as an offline fallback.
+-- Use the included seed generator script if you want bulk inserts from the JSON files.
